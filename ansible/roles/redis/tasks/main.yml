@@ -1,0 +1,22 @@
+---
+# Install
+- include: install.yml
+  tags: redis
+
+# Change redis install location if not default path
+- include: location.yml
+  when: "'{{ redis_path }}' != '/var/lib/redis'"
+
+# Configure Supervisor
+- include: supervisor.yml
+  tags: redis
+
+# Restart redis with Supervisor
+- name: Redis | Restart redis with Supervisor
+  supervisorctl: name=redis-server state=restarted
+  tags: redis
+
+# Check that service is running
+- name: Redis | Check daemon
+  service: name=redis-server state=started enabled=yes
+  tags: redis

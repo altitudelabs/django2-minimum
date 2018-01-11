@@ -1,0 +1,15 @@
+---
+
+- include: setup_scrapy.yml
+  tags: scrapy
+
+- include: setup_cron.yml
+  tags:
+    - scrapy
+    - cron
+    - deploy
+
+- include: setup_rqworker.yml
+  tags:
+    - rqworker
+    - deploy

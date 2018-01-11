@@ -1,0 +1,76 @@
+---
+
+# We probably do not need this, but leaving the this here just in case
+#
+# - name: Set virtualenv permissions
+#   file:
+#     path: "{{ virtualenv_path }}"
+#     mode: u=rwX,g=rX,o=rX
+#     recurse: yes
+#   tags: permissions
+
+- name: Set virtualenv ownership and permissions
+  file:
+    path: "{{ virtualenv_path }}"
+    owner: "{{ gunicorn_user }}"
+    group: "{{ gunicorn_group }}"
+    state: directory
+    recurse: yes
+  tags: permissions
+
+- name: Install packages required by the Django app inside virtualenv
+  pip: virtualenv={{ virtualenv_path }} requirements={{ requirements_file }}
+  tags: deploy
+
+- name: Create python NLTK install script
+  template: src=install_nltk.py
+            dest=/webapps/app/install_nltk.py
+            backup=yes
+            force=yes
+            mode="u+rwx"
+  tags: deploy
+
+- name: Run install NLTK install script
+  shell: "{{ virtualenv_path }}/bin/python /webapps/app/install_nltk.py"
+  sudo: yes
+  sudo_user: root
+  tags: deploy
+
+- name: Run the Django make migrations command
+  django_manage:
+    command: makemigrations
+    app_path: "{{ project_path }}"
+    virtualenv: "{{ virtualenv_path }}"
+    settings: "{{ django_settings_file }}"
+  environment: "{{ django_environment }}"
+  when: run_django_makemigrations is defined and run_django_makemigrations
+  tags: django.makemigrations
+
+- name: Run Django database migrations
+  django_manage:
+    command: migrate
+    app_path: "{{ project_path }}"
+    virtualenv: "{{ virtualenv_path }}"
+    settings: "{{ django_settings_file }}"
+  environment: "{{ django_environment }}"
+  when: run_django_db_migrations is defined and run_django_db_migrations
+  tags: django.migrate
+
+- name: npm install
+  npm: path={{ project_path }}
+  tags: frontend
+
+- name: Run Gulp build
+  shell: gulp build
+  args:
+    chdir: "{{ project_path }}"
+  when: run_gulp is defined and run_gulp
+  tags: frontend
+
+- name: Create command script
+  template: src=command.sh
+            dest=/webapps/command.sh
+            backup=yes
+            force=yes
+            mode="u+rwx"
+  tags: deploy

@@ -1,0 +1,8 @@
+---
+
+git_repo: git@github.com:altitudelabs/metisa-retail.git
+
+project_name: metisa
+application_name: app
+
+ssl_dest_dir: /etc/ssl

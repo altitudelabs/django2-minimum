@@ -1,0 +1,40 @@
+---
+- name: Install fixtures third_party_app
+  django_manage:
+    command: loaddata third_party_app
+    app_path: "{{ project_path }}"
+    virtualenv: "{{ virtualenv_path }}"
+    settings: "{{ django_settings_file }}"
+  environment: "{{ django_environment }}"
+
+- name: Install fixtures notification_type
+  django_manage:
+    command: loaddata notification_type
+    app_path: "{{ project_path }}"
+    virtualenv: "{{ virtualenv_path }}"
+    settings: "{{ django_settings_file }}"
+  environment: "{{ django_environment }}"
+
+- name: Install fixtures tour
+  django_manage:
+    command: loaddata tour
+    app_path: "{{ project_path }}"
+    virtualenv: "{{ virtualenv_path }}"
+    settings: "{{ django_settings_file }}"
+  environment: "{{ django_environment }}"
+
+- name: Install fixtures action
+  django_manage:
+    command: loaddata action
+    app_path: "{{ project_path }}"
+    virtualenv: "{{ virtualenv_path }}"
+    settings: "{{ django_settings_file }}"
+  environment: "{{ django_environment }}"
+
+- name: Install fixtures trigger
+  django_manage:
+    command: loaddata trigger
+    app_path: "{{ project_path }}"
+    virtualenv: "{{ virtualenv_path }}"
+    settings: "{{ django_settings_file }}"
+  environment: "{{ django_environment }}"

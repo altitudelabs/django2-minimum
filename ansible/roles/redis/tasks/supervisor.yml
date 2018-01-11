@@ -1,0 +1,9 @@
+---
+- name: Redis | Stop init.d service
+  service: name=redis-server state=stopped enabled=no
+
+- name: Redis | Deploy supervisor service configuration
+  template: src=supervisor_conf.d_redis-server.conf.j2 dest=/etc/supervisor/conf.d/redis-server.conf owner=root group=root mode=0644 backup=no
+
+- name: Redis | Re-read the Supervisor config files
+  supervisorctl: name=redis-server state=present

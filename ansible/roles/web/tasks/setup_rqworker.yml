@@ -1,0 +1,17 @@
+- name: Create the Supervisor config file for workers
+  template: src=supervisor_rqworker_config.j2
+            dest=/etc/supervisor/conf.d/rqworker.conf
+            backup=yes
+
+- name: Re-read and update Supervisor config
+  command: "supervisorctl {{ item }}"
+  with_items:
+    - reread
+    - update
+  sudo: yes
+
+- name: Restart Supervisor worker processes
+  command: "supervisorctl restart {{ item }}"
+  with_items:
+    - rqworkers_all:*
+  sudo: yes

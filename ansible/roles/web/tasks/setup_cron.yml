@@ -1,0 +1,63 @@
+---
+- name: Setup cronjob to process store data daily
+  cron: name="process_store_daily"
+        user="root"
+        minute="0" hour="16"
+        job="/webapps/command.sh full_cron_job"
+
+- name: Manage payments and subscriptions
+  cron: name="Manage payments and subscriptions for stores"
+        user="root"
+        minute="0" hour="16"
+        job="/webapps/command.sh payment"
+
+- name: Weekly growth metric for tracking growth, for internal use
+  cron: name="Weekly growth metric"
+        user="root"
+        weekday="1" minute="30" hour="1"
+        job="/webapps/command.sh weekly_growth_metric"
+  when: server_env == "production"
+
+- name: Check supervisor every 15 minutes
+  cron: name="check_supervisor"
+        user="root"
+        minute="*/15"
+        job="/webapps/check_supervisor.sh"
+
+- name: Run email queue every 15 minutes
+  cron: name="email_create"
+        user="root"
+        minute="*/15"
+        job="/webapps/command.sh email_send"
+
+- name: Import latest Shopify product data every 12 hours for scarcity in widget
+  cron: name="sync_shopify_products"
+        user="root"
+        minute="0" hour="4"
+        job="/webapps/command.sh sync_shopify_products"
+
+- name: Update widget statistics
+  cron: name="widget_events"
+        user="root"
+        minute="*/30"
+        job="/webapps/command.sh widget_events"
+
+- name: Update email statistics
+  cron: name="email_events"
+        user="root"
+        minute="*/30"
+        job="/webapps/command.sh email_events"
+
+- name: Zalora default recommendation
+  cron: name="Zalora recommendation"
+        user="root"
+        minute="15" hour="5,11,17,23"
+        job="/webapps/command.sh zalora_default -u -n -b -c -a"
+  when: server_env == "production"
+
+- name: Zalora spark recommendation
+  cron: name="Zalora spark recommendation"
+        user="root"
+        minute="0" hour="15"
+        job="/webapps/command.sh spark_recommender -s zalora_sg"
+  when: server_env == "production"

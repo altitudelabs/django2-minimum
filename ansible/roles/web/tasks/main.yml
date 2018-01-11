@@ -1,0 +1,26 @@
+---
+
+- include: install_additional_packages.yml
+  tags: packages
+
+- include: install_packages_for_llvmlite.yml
+  tags:
+    - packages
+    - llvmlite
+
+- include: create_users_and_groups.yml
+
+- include: setup_virtualenv.yml
+  tags: virtualenv
+
+- include: setup_git_repo.yml
+  tags: deploy
+
+- include: setup_django_app.yml
+  tags: deploy
+
+- include: setup_web.yml
+  when: webserver is defined and webserver
+
+- include: setup_compute.yml
+  when: computeserver is defined and computeserver

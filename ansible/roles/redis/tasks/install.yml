@@ -1,0 +1,23 @@
+---
+- name: Redis | Install package
+  apt: name=redis-server state=installed
+
+- name: Redis | Ensure base folder exists
+  file: path=/etc/redis state=directory owner=root group=root mode=0755
+  tags: redis
+
+- name: Redis | Setup group
+  group: name={{ redis_group }}
+
+- name: Redis | Setup user
+  user: name={{ redis_user }} group={{ redis_group }} home="/var/lib/redis" shell="/bin/false" comment="Redis Server"
+
+- name: Redis | Ensure log folder exists
+  file: path=/var/log/redis state=directory owner={{ redis_user }} group={{ redis_group }} mode=0755
+  tags: redis
+
+- name: Redis | Deploy configuration
+  template: src=redis.conf.j2 dest=/etc/redis/redis.conf owner=root group=root mode=0644 backup=yes
+  notify: restart redis
+  register: result
+  tags: redis

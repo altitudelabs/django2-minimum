@@ -1,0 +1,32 @@
+---
+
+- name: Install additional packages
+  apt: name={{ item }} update_cache={{ update_apt_cache }} force=yes state=installed
+  with_items:
+    - libpq-dev
+    - libxml2-dev # for lxml
+    - libxslt1-dev # for lxml
+    - libffi-dev
+    - libfreetype6-dev
+    - libpng12-dev
+    - python-numpy
+    - python-scipy
+    - python-matplotlib
+    - ipython
+    - ipython-notebook
+    - pkg-config
+    - python-pandas
+    - python-sympy
+    - python-nose
+    - libblas-dev
+    - liblapack-dev
+    - libatlas-base-dev
+    - gfortran
+    - libtiff5-dev
+    - libjpeg8-dev
+    - zlib1g-dev
+    - liblcms2-dev
+    - libwebp-dev
+    - tcl8.6-dev
+    - tk8.6-dev
+    - python-tk
